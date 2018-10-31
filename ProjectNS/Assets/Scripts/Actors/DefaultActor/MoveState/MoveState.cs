@@ -23,6 +23,8 @@ public class MoveState : MonoBehaviour {
     Components components;
     TimeCounter timeCounter;
 
+    ActorState actorState;
+
 
 	// Use this for initialization
 	void Start () {
@@ -32,12 +34,15 @@ public class MoveState : MonoBehaviour {
 
         timeCounter = components.GetTimeCounter();
         if (timeCounter != null) timeCounter.AttachReverseMove(ReverseMove);
+
+        actorState = components.GetActorState();
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void LateUpdate () {
 
         UpdateMove();
+        
     }
 
     private Vector2 moveDir;
@@ -69,10 +74,25 @@ public class MoveState : MonoBehaviour {
             moveDir = Vector2.zero;
             if (MoveEvent != null) MoveEvent();
 
+
             // 이벤트 사용 후 정보를 토대로 이동
             Vector3 vec3 = new Vector3(moveDir.x, moveDir.y, transform.position.z);
 
-            transform.Translate(vec3 * timeManager.GetSecond(), Space.World);
+            // 특정 대상을 구분짓고 싶다면 여기서 설정
+
+
+
+
+            if (actorState.PlayerType == ActorState.EnumPlayer.ENEMY)
+                transform.Translate(vec3 * timeManager.GetActorSecond(), Space.World);
+
+            else if (actorState.PlayerType == ActorState.EnumPlayer.PLAYER)
+                transform.Translate(vec3 * timeManager.GetPlayerSecond(), Space.World);
+
+
+
+
+
         }
     }
 
@@ -86,6 +106,9 @@ public class MoveState : MonoBehaviour {
 
     public void ReverseMove(TimeState beforeTS, TimeState dbBeforeTS, float deltaTime)
     {
+        // rigidbody 설정
+
+
         float beforeDeltaTime = beforeTS.DeltaTime;
 
 
@@ -98,5 +121,10 @@ public class MoveState : MonoBehaviour {
         Vector2 vec2 = Vector2.Lerp(dbBeforeTS.Position, beforeTS.Position, linear);
 
         transform.position = vec2;
+
+        components.GetRigidBody2D().velocity = 
+            Vector2.up * Mathf.Lerp(dbBeforeTS.JumpHeight, beforeTS.JumpHeight, linear);
+
+        
     }
 }

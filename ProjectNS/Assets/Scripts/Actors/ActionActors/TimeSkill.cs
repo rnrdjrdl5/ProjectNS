@@ -33,17 +33,21 @@ public class TimeSkill : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            TimeManager.GetInstance().SecondScale = 3;
+            Debug.Log("플레이어 가속");
+            TimeManager.GetInstance().PlayerSecondScale = 3;
         }
 
         if (Input.GetKeyDown(KeyCode.F))
         {
-            TimeManager.GetInstance().SecondScale = 0.3f;
+            Debug.Log("플레이어 제외 감속");
+            TimeManager.GetInstance().ActorSecondScale = 0.3f;
         }
 
         if (Input.GetKeyDown(KeyCode.G))
         {
-            TimeManager.GetInstance().SecondScale = 1.0f;
+            Debug.Log("리셋");
+            TimeManager.GetInstance().ActorSecondScale = 1.0f;
+            TimeManager.GetInstance().PlayerSecondScale = 1.0f;
         }
     }
 

@@ -23,11 +23,17 @@ public class TimeCounter : MonoBehaviour {
 
     public float maxTimeStates = 1;         // 액터가 정보를 저장 가능한 최대 시간
 
+    private Components components;
+    private Rigidbody2D rb2D;
+
     void Start () {
 
         IsForwardTime = true;
         timeManager = TimeManager.GetInstance();
         TimeStates = new List<TimeState>();
+
+        components = GetComponent<Components>();
+        rb2D = components.GetRigidBody2D();
     }
 
     public bool IsForwardTime { get; set; }       // 시간의 흐름을 나타냄, true : 나아가는 방향  false : 반대 방향
@@ -65,6 +71,8 @@ public class TimeCounter : MonoBehaviour {
         timeState.Position = vec2Pos;           //위치정보를 Vector2로 저장
         timeState.DeltaTime = Time.deltaTime;       // 정보 등록 당시 deltaTime
         timeState.RealPlayTime = Time.realtimeSinceStartup; // 정보 등록 당시 realTime
+        timeState.JumpHeight = rb2D.velocity.y;     // 중력정보를 저장
+        
 
 
         TimeStates.Add(timeState);

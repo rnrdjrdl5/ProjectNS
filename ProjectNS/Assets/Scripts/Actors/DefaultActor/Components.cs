@@ -18,6 +18,14 @@ public class Components : MonoBehaviour {
         return timeSkill;
     }
 
+    private ActorState actorState;
+    public ActorState GetActorState()
+    {
+        if (actorState == null) return null;
+        return actorState;
+    }
+
+
     private TimeCounter timeCounter;
     public TimeCounter GetTimeCounter() {
         if (timeCounter == null) return null;
@@ -45,6 +53,15 @@ public class Components : MonoBehaviour {
         return aIController;
     }
     public AIController tempAIController;
+
+    private Rigidbody2D rb2D;
+    public Rigidbody2D GetRigidBody2D()
+    {
+        if (rb2D == null) return null;
+        return rb2D;
+    }
+
+    
 
     // Use this for initialization
     void Awake () {
@@ -78,9 +95,12 @@ public class Components : MonoBehaviour {
 
     public void DefaultComponents()
     {
+        rb2D = GetComponent<Rigidbody2D>();
+
         moveState = GetComponent<MoveState>();
         playerController = GetComponent<PlayerController>();
         aIController = GetComponent<AIController>();
         timeCounter = GetComponent<TimeCounter>();
+        actorState = GetComponent<ActorState>();
     }
 }

@@ -10,9 +10,15 @@ using UnityEngine;
  * 
  * - 이 컴포넌트에서는 AI 이동이나 플레이어 조작이동을 다룬다
  * 
+ * - 프로토타입용으로 자세한 구현 내용을 담지 않았다.
+ * 
  * *************************************************/
 
 public class MoveAction : MonoBehaviour {
+
+
+    public float moveSpeed = 5.0f;
+    public float jumpHeight = 10.0f;
 
     Components components;
 
@@ -22,7 +28,11 @@ public class MoveAction : MonoBehaviour {
     {
         components = GetComponent<Components>();
         moveState = components.GetMoveState();
-        if (moveState != null) moveState.AttachMoveEvent(MoveEvent);
+        if (moveState != null)
+        {
+            moveState.AttachMoveEvent(MoveEvent);
+            moveState.AttachMoveEvent(JumpEvent);
+        }
     }
 
 
@@ -40,7 +50,6 @@ public class MoveAction : MonoBehaviour {
          * AI 와 플레이어 로 구분지어서 사용한다.
          * 
          * ****************************************/
-        
         if (components.playerController != null)
         {
             moveDir = PlayerMove();
@@ -54,13 +63,25 @@ public class MoveAction : MonoBehaviour {
         moveState.AddMoveDir(moveDir);
     }
 
+    public void JumpEvent()
+    {
+
+        // 점프 값을 추가한다.
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+
+            components.GetRigidBody2D().velocity += Vector2.up * jumpHeight;
+        }
+
+
+    }
+
     public Vector2 PlayerMove()
     {
         float right = Input.GetAxisRaw("Horizontal");
-        float up = Input.GetAxisRaw("Vertical");
 
-
-        return new Vector2(right, up);
+        return right * Vector2.right * moveSpeed;
     }
 
     // 더미, 추후 AI 사용 시 AI 컴포넌트로 빼야 할 것
