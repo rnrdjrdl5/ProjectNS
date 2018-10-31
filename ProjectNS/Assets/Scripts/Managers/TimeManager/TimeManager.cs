@@ -24,15 +24,15 @@ public class TimeManager : MonoBehaviour {
 
 
     private float beforeRealTime;       // 이전 실제시간
-    private float actorSecond;               // 실제 프레임
-    public float GetActorSecond() { return actorSecond; }
+    private float objectSecond;               // 액터들 사용 배율
+    public float GetObjectSecond() { return objectSecond; }
 
-    private float playerSecond;
+    private float playerSecond;     // 플레이어 사용 배율
     public float GetPlayerSecond() { return playerSecond; }
 
 
-    public float ActorSecondScale { get; set; }          // 시간에 대한 배율, 슬로우와 가속을 정할 수 있음.
-    public float PlayerSecondScale { get; set; }
+    public float ObjectSecondScale { get; set; }          // 일반 사용 배율
+    public float PlayerSecondScale { get; set; }        // 플레이어 사용 배율
 
 
 
@@ -41,17 +41,17 @@ public class TimeManager : MonoBehaviour {
     private void Awake()
     {
         timeManager = this;
-        actorSecond = 0.0f;
+        objectSecond = 0.0f;
         playerSecond = 0.0f;
 
-        ActorSecondScale = 1.0f;
+        ObjectSecondScale = 1.0f;
         PlayerSecondScale = 1.0f;
     }
 
     // Use this for initialization
     void Start () {
 
-        actorSecond = 0.0f;
+        objectSecond = 0.0f;
         beforeRealTime = Time.realtimeSinceStartup;
 	}
 	
@@ -62,7 +62,7 @@ public class TimeManager : MonoBehaviour {
          beforeRealTime = Time.realtimeSinceStartup;*/
 
 
-        actorSecond = Time.deltaTime * ActorSecondScale;
+        objectSecond = Time.deltaTime * ObjectSecondScale;
         playerSecond = Time.deltaTime * PlayerSecondScale;
         
 	}

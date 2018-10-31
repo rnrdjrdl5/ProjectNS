@@ -21,6 +21,7 @@ public class TimeCounter : MonoBehaviour {
     private TimeManager timeManager;        // 매니저
     private List<TimeState> TimeStates;           // 시간 당 액터들 정보
 
+
     public float maxTimeStates = 1;         // 액터가 정보를 저장 가능한 최대 시간
 
     private Components components;
@@ -33,7 +34,7 @@ public class TimeCounter : MonoBehaviour {
         TimeStates = new List<TimeState>();
 
         components = GetComponent<Components>();
-        rb2D = components.GetRigidBody2D();
+        rb2D = GetComponent<Rigidbody2D>();
     }
 
     public bool IsForwardTime { get; set; }       // 시간의 흐름을 나타냄, true : 나아가는 방향  false : 반대 방향
@@ -63,17 +64,38 @@ public class TimeCounter : MonoBehaviour {
     void RegisterTimeState()
     {
 
+        // 상속을 사용해서 해결해본다?
+
+
         TimeState timeState = new TimeState();
 
         // 이동 관련 정보
         Vector2 vec2Pos = new Vector2(transform.position.x, transform.position.y);
 
-        timeState.Position = vec2Pos;           //위치정보를 Vector2로 저장
-        timeState.DeltaTime = Time.deltaTime;       // 정보 등록 당시 deltaTime
-        timeState.RealPlayTime = Time.realtimeSinceStartup; // 정보 등록 당시 realTime
-        timeState.JumpHeight = rb2D.velocity.y;     // 중력정보를 저장
-        
 
+        for (int i = 0; i < components.Properties.Length; i++)
+        {
+            switch (components.Properties[i])
+            {
+                case Components.EnumProperty.OBJECT:
+                    TObjectState tos = new TObjectState
+                    {
+                        Position = vec2Pos,           
+                        DeltaTime = Time.deltaTime,      
+                        RealPlayTime = Time.realtimeSinceStartup 
+                    };
+                    timeState.TObjectSt = tos;
+                    break;
+
+                case Components.EnumProperty.ACTOR:
+                    TActorState tas = new TActorState
+                    {
+                        JumpHeight = rb2D.velocity.y
+                    };
+                    timeState.TActorSt = tas;
+                    break;
+            }
+        }
 
         TimeStates.Add(timeState);
     }
@@ -89,7 +111,7 @@ public class TimeCounter : MonoBehaviour {
         {
 
             // 이전으로는 다 버려버린다.
-            if (Time.realtimeSinceStartup - maxTimeStates > TimeStates[i].RealPlayTime)
+            if (Time.realtimeSinceStartup - maxTimeStates > TimeStates[i].TObjectSt.RealPlayTime)
             {
                 for (int j = i; j >= 0; j--)
                     TimeStates.RemoveAt(j);
@@ -137,10 +159,10 @@ public class TimeCounter : MonoBehaviour {
         {
 
             // 값이 크면 삭제하면서 다음 위치로
-            if (beforeTS.DeltaTime < deltaTime)
+            if (beforeTS.TObjectSt.DeltaTime < deltaTime)
             {
 
-                deltaTime -= beforeTS.DeltaTime;
+                deltaTime -= beforeTS.TObjectSt.DeltaTime;
 
                 if (count <= 1)
                 {
@@ -156,11 +178,11 @@ public class TimeCounter : MonoBehaviour {
 
 
             // 해당 위치를 찾았을 때 
-            else if (beforeTS.DeltaTime >= deltaTime)
+            else if (beforeTS.TObjectSt.DeltaTime >= deltaTime)
             {
 
                 // 보간 사용할 시간 지정
-                deltaTime = beforeTS.DeltaTime - deltaTime;
+                deltaTime = beforeTS.TObjectSt.DeltaTime - deltaTime;
                 if (deltaTime < 0) deltaTime = 0;
                 break;
             }

@@ -2,28 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/* ************************************
+ * 
+ *  - 모든 컴포넌트를 가지는 컴포넌트
+ * 
+ * - 그 외 기본적인 기능을 가진다.
+ * 
+ * ************************************/
+
 public class Components : MonoBehaviour {
 
-    ActorManager actorManager;
+    ObjectManager objectManager;
     TimeManager timeManager;
 
+    public enum EnumProperty { OBJECT, ACTOR };
+    public EnumProperty[] Properties;
 
 
-    public enum EnumActor { PLAYER, OTHERS }
-    public EnumActor ActorType;
-
-    private TimeSkill timeSkill;
-    public TimeSkill GetTimeReserver() {
-        if (timeSkill == null) return null;
-        return timeSkill;
-    }
-
-    private ActorState actorState;
-    public ActorState GetActorState()
-    {
-        if (actorState == null) return null;
-        return actorState;
-    }
 
 
     private TimeCounter timeCounter;
@@ -39,20 +35,20 @@ public class Components : MonoBehaviour {
     }
 
 
-    public PlayerController playerController;
+    public PlayerController playerController { get; set; }
     public PlayerController GetPlayerController()
     {
         if (playerController == null) return null;
         return playerController;
     }
 
-    public AIController aIController;
+    public AIController aIController { get; set; }
     public AIController GetAIController()
     {
         if (aIController == null) return null;
         return aIController;
     }
-    public AIController tempAIController;
+    public AIController tempAIController { get; set; }
 
     private Rigidbody2D rb2D;
     public Rigidbody2D GetRigidBody2D()
@@ -66,41 +62,47 @@ public class Components : MonoBehaviour {
     // Use this for initialization
     void Awake () {
 
-        DefaultComponents();
-
-        switch (ActorType)
+        for (int i = 0; i < Properties.Length; i++)
         {
-            case EnumActor.PLAYER:
-                SetPlayerComponenets();
-                break;
+            switch(Properties[i])
+            {
+                case EnumProperty.ACTOR:
+                    SetActorComponents();
+                    break;
 
-            case EnumActor.OTHERS:
-                break;
+                case EnumProperty.OBJECT:
+                    SetObjectComponent();
+                    break;
+            }
         }
     }
 
     private void Start()
     {
-        actorManager = ActorManager.GetInstance();
+        objectManager = ObjectManager.GetInstance();
         timeManager = TimeManager.GetInstance();
 
-        actorManager.Actors.Add(gameObject);
-        actorManager.Componentss.Add(this);
+        objectManager.Actors.Add(gameObject);
+        objectManager.Componentss.Add(this);
     }
 
-    public void SetPlayerComponenets()
+
+
+
+
+
+    void SetObjectComponent()
     {
-        timeSkill = GetComponent<TimeSkill>();
+        timeCounter = GetComponent<TimeCounter>();
     }
 
-    public void DefaultComponents()
+    void SetActorComponents()
     {
+        aIController = GetComponent<AIController>();
+        tempAIController = aIController;
+
         rb2D = GetComponent<Rigidbody2D>();
 
         moveState = GetComponent<MoveState>();
-        playerController = GetComponent<PlayerController>();
-        aIController = GetComponent<AIController>();
-        timeCounter = GetComponent<TimeCounter>();
-        actorState = GetComponent<ActorState>();
     }
 }

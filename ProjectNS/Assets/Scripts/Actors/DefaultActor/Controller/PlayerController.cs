@@ -16,11 +16,21 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-    Components components;
+    private void Start()
+    {
+        isUseAttach = false;
+    }
+
+    public Components components { get; set; }
+   
+
+
 
     public void AttachPlayerController()
     {
+        
         components = transform.parent.GetComponent<Components>();
+        if (components == null) return;
 
         components.playerController = this;
         components.aIController = null;
@@ -34,18 +44,49 @@ public class PlayerController : MonoBehaviour {
         components.aIController = components.tempAIController;
     }
 
+    bool isUseAttach;       // 초기값 false 설정
 
     // 더미, 붙였다 뗐다
     public void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Z))
+
+
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             AttachPlayerController();
-        }
+            isUseAttach = true;
 
+        }
         if (Input.GetKeyDown(KeyCode.X))
         {
             ReleasePlayerController();
+            isUseAttach = false;
+        }
+
+
+        if (isUseAttach)
+        {
+
+           
+            if (components == null)
+            {
+                isUseAttach = false;
+                return;
+            }
+
+
+            Debug.Log("키입력");
+            // 키입력 받기
+            float xPosition = Input.GetAxisRaw("Horizontal");
+            float yPosition = Input.GetAxisRaw("Vertical");
+
+            components.GetMoveState().UpdateMove(xPosition, yPosition);
+
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                components.GetTimeCounter().IsForwardTime = false;
+            }
         }
     }
 
