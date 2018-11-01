@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 241506514}
   - component: {fileID: 241506513}
   - component: {fileID: 241506516}
+  - component: {fileID: 241506522}
   - component: {fileID: 241506520}
   - component: {fileID: 241506519}
   - component: {fileID: 241506517}
@@ -285,7 +286,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 466e422ffa7b5ee43a4ba3eb688092ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActorSpeed: 5
+  ActorSpeed: 0.2
+--- !u!95 &241506522
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 241506512}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 42af382e8ea3f324b8e3903e7a8f4567, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &264959556
 GameObject:
   m_ObjectHideFlags: 0

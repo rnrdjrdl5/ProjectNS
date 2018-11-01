@@ -75,12 +75,11 @@ public class PlayerController : MonoBehaviour {
             }
 
 
-            Debug.Log("키입력");
             // 키입력 받기
             float xPosition = Input.GetAxisRaw("Horizontal");
-            float yPosition = Input.GetAxisRaw("Vertical");
+            //float yPosition = Input.GetAxisRaw("Vertical");
 
-            components.GetMoveState().UpdateMove(xPosition, yPosition);
+            components.GetMoveState().UpdateMove(xPosition,0);
 
 
             if (Input.GetKeyDown(KeyCode.Q))

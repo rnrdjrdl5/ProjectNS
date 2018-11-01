@@ -5,7 +5,7 @@ using UnityEngine;
 
 /******************************************************
  * 
- * MoveState
+ *   MoveState
  * 
  * - 이동과 관련된 모든 정보를 수집해서 사용
  * 
@@ -31,7 +31,6 @@ public class MoveState : MonoBehaviour {
         components = GetComponent<Components>();
 
         timeCounter = components.GetTimeCounter();
-        if (timeCounter != null) timeCounter.AttachReverseMove(ReverseMove);
 
     }
 	
@@ -75,11 +74,40 @@ public class MoveState : MonoBehaviour {
             if (EnvMoveEvent != null) EnvMoveEvent();
 
 
+            if (moveDir.x == 0)
+            {
+                components.GetAnimator().SetBool("isMove", false);
+            }
+
+            else
+            {
+                float rotateYFloat = 0;
+
+                components.GetAnimator().SetBool("isMove", true);
+                if (moveDir.x > 0)
+                {
+                    rotateYFloat = 0;
+                }
+
+
+                else if (moveDir.x < 0)
+                {
+                    rotateYFloat = 180;
+                }
+
+                transform.rotation = Quaternion.Euler(0, rotateYFloat, 0);
+
+
+
+                Quaternion.Euler(new Vector3(0, rotateYFloat, 0));
+            }
 
             // 이벤트 사용 후 정보를 토대로 이동
             Vector3 vec3 = new Vector3(moveDir.x, moveDir.y, transform.position.z);
 
             // 특정 대상을 구분짓고 싶다면 여기서 설정
+
+            
 
             if (components.playerController != null)
             {

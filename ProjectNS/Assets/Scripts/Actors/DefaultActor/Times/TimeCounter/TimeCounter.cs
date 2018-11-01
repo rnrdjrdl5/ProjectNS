@@ -14,6 +14,10 @@ using UnityEngine;
  *  
  *  - 시간 되돌리기 사용 시 기록 정보를 이용해서 되돌린다
  *  
+ *  - 컴포넌트 당 해당 컴포넌트의 변수, 타입 등을 기록하기 때문에
+ *    기록 종류는 컴포넌트의 종류와 일치할 듯 함
+ *    --> 즉, Components의 Properties 만큼 기록하면 된다
+ *    
  *  **********************************************************/
 
 public class TimeCounter : MonoBehaviour {
@@ -61,6 +65,23 @@ public class TimeCounter : MonoBehaviour {
 
     }
 
+
+    /***********************************************************************
+     * 
+     * - 등록할 때 Component 타입 내에서 여러 타입으로 나뉘는 것들은 
+     *   Event로 대신 처리시킨다.
+     *   
+     * - 예시) Object별 Animator 내 변수.  각 변수 종류가 무궁무진하기 때문
+     * 
+     * ********************************************************************/
+
+    public delegate void DeleNoPara();
+    event DeleNoPara OtherRegisterEvent;
+    public void AttachOtherRegisterEvent(DeleNoPara dor)
+    {
+        OtherRegisterEvent += dor;
+    }
+
     // 시간과 관련된 정보를 등록한다.
     void RegisterTimeState()
     {
@@ -84,6 +105,7 @@ public class TimeCounter : MonoBehaviour {
                         Position = vec2Pos,           
                         DeltaTime = Time.deltaTime,      
                         RealPlayTime = Time.realtimeSinceStartup 
+                        
                     };
                     timeState.TObjectSt = tos;
 
@@ -93,18 +115,34 @@ public class TimeCounter : MonoBehaviour {
                 case Components.EnumProperty.ACTOR:
                     TActorState tas = new TActorState
                     {
-                        JumpHeight = rb2D.velocity.y
+                        JumpHeight = rb2D.velocity.y,
+                        IsMoveAnimator = components.GetAnimator().GetBool("isMove"),
+                        RotateYFloat = transform.rotation.eulerAngles.y
                     };
+                    
                     timeState.TActorSt = tas;
 
                     tas.AttachEvent(timeState);
                     break;
             }
         }
-
+        if(OtherRegisterEvent != null) OtherRegisterEvent();
         TimeStates.Add(timeState);
     }
 
+
+     /***********************************************************************
+     * 
+     * - 체크도 Event로 대신 처리시킨다.
+     *   
+     * - 예시) Object별 Animator 내 변수.  각 변수 종류가 무궁무진하기 때문
+     * 
+     * ********************************************************************/
+    event DeleNoPara OtherCheckTimeEvent;
+    public void AttachOtherCheckTimeEvent(DeleNoPara dnp)
+    {
+        OtherCheckTimeEvent = dnp;
+    }
 
     // 최대 저장가능한 정보를 판단하고 삭제한다
     void CheckTime()
@@ -124,6 +162,8 @@ public class TimeCounter : MonoBehaviour {
                 break;
             }
         }
+
+        if(OtherCheckTimeEvent!= null) OtherCheckTimeEvent();
     }
 
 
@@ -138,7 +178,17 @@ public class TimeCounter : MonoBehaviour {
      *  - 되돌린 시간대를 구하고 나서는 
      *    보간을 사용해서 위치를 정해준다.
      *  
+     *  
+     *  - 등록 범위가 무궁무진한 Animator 변수같은 경우는
+     *  
+     *  - Event로 알아서 처리하라고 해야한다.
      *  *********************************************************/
+
+    event DeleNoPara OtherReverseTimeEvent;
+    public void AttachOtherReverseTimeEvent(DeleNoPara dnp)
+    {
+        OtherReverseTimeEvent = dnp;
+    }
     void ReverseTime()
     {
 
@@ -229,7 +279,7 @@ public class TimeCounter : MonoBehaviour {
          * **********************************************************/
         beforeTS.CallReverseTimeEvent(beforeTS, dbBeforeTS, linear, gameObject, components);
 
-
+        if(OtherReverseTimeEvent!=null) OtherReverseTimeEvent();
 
         // 사용 후 지금 위치의 이벤트 삭제
         TimeStates.RemoveAt(count - 1);

@@ -21,7 +21,6 @@ public class TObjectState {
         Components components
         )
     {
-        Debug.Log("이벤트 수행2");
         Vector2 vec2 = Vector2.Lerp(
             dbBeforeTS.TObjectSt.Position, 
             beforeTS.TObjectSt.Position, 

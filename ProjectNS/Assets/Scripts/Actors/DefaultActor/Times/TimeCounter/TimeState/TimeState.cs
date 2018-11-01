@@ -16,7 +16,7 @@ public class TimeState{
     // 오브젝트 속성들
     public TObjectState TObjectSt { get; set; }
     public TActorState TActorSt { get; set; }
-
+    public TAnimatorState TAnimatorSt { get; set; }
 
 
 
@@ -53,7 +53,6 @@ public class TimeState{
         if (reverseTimeEvent != null)
         {
 
-            Debug.Log("이벤트 수행1");
             reverseTimeEvent(
                 beforeTS,
                 dbBeforeTS,

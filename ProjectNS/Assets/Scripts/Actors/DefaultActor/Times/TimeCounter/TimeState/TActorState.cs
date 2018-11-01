@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class TActorState{
     public Rigidbody2D Rb2D { get; set; }
-
     public float JumpHeight { get; set; }
+    public float RotateYFloat { get; set; }
+
+    public bool IsMoveAnimator { get; set; }
 
     // 시간 되돌리기
     public void ReverseTime(
@@ -17,10 +19,15 @@ public class TActorState{
         )
     {
 
-        Debug.Log("이벤트 수행3");
 
         components.GetRigidBody2D().velocity =
             Vector2.up * Mathf.Lerp(dbBeforeTS.TActorSt.JumpHeight, beforeTS.TActorSt.JumpHeight, linear);
+
+        components.GetAnimator().SetBool("isMove",
+            beforeTS.TActorSt.IsMoveAnimator);
+
+        target.transform.rotation = Quaternion.Euler(0, RotateYFloat, 0);
+
     }
 
     public void AttachEvent(TimeState timeState)

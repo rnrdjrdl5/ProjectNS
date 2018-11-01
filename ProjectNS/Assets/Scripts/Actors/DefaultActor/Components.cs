@@ -19,7 +19,12 @@ public class Components : MonoBehaviour {
     public enum EnumProperty { OBJECT, ACTOR };
     public EnumProperty[] Properties;
 
-
+    private Animator Anim;
+    public Animator GetAnimator()
+    {
+        if (Anim == null) return null;
+        return Anim;
+    }
 
 
     private TimeCounter timeCounter;
@@ -94,6 +99,7 @@ public class Components : MonoBehaviour {
     void SetObjectComponent()
     {
         timeCounter = GetComponent<TimeCounter>();
+        Anim = GetComponent<Animator>();
     }
 
     void SetActorComponents()
@@ -104,5 +110,7 @@ public class Components : MonoBehaviour {
         rb2D = GetComponent<Rigidbody2D>();
 
         moveState = GetComponent<MoveState>();
+
+        
     }
 }
