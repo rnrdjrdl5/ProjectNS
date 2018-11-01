@@ -59,7 +59,7 @@ public class MoveState : MonoBehaviour {
 
         /* ****************************************************************
          * 
-         * 시간 되돌리기 중에만 사용한다.
+         * 시간 되돌리기가 아닐 때 움직일 수 있다.
          * 
          *  - 단, 특정 대상은 움직일 수 있도록 바꿔야 한다면 수정이 필요하다. 
          *  
@@ -95,38 +95,5 @@ public class MoveState : MonoBehaviour {
 
 
         }
-    }
-
-
-    /*  ********************************************
-     * 
-     * TimeCounter의 시간 되돌리기 이동을 처리
-     * 
-     *  - Event로 처리한다. 
-     *  
-     *  ********************************************/
-
-    public void ReverseMove(TimeState beforeTS, TimeState dbBeforeTS, float deltaTime)
-    {
-        // rigidbody 설정
-
-
-        float beforeDeltaTime = beforeTS.TObjectSt.DeltaTime;
-
-
-        float linear = 0.0f;
-        if (deltaTime > 0)
-        {
-            linear = deltaTime / beforeTS.TObjectSt.DeltaTime;
-        }
-
-        Vector2 vec2 = Vector2.Lerp(dbBeforeTS.TObjectSt.Position, beforeTS.TObjectSt.Position, linear);
-
-        transform.position = vec2;
-
-        components.GetRigidBody2D().velocity = 
-            Vector2.up * Mathf.Lerp(dbBeforeTS.TActorSt.JumpHeight, beforeTS.TActorSt.JumpHeight, linear);
-
-        
     }
 }

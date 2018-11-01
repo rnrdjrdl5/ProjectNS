@@ -125,8 +125,8 @@ GameObject:
   - component: {fileID: 241506516}
   - component: {fileID: 241506520}
   - component: {fileID: 241506519}
-  - component: {fileID: 241506518}
   - component: {fileID: 241506517}
+  - component: {fileID: 241506518}
   - component: {fileID: 241506521}
   m_Layer: 0
   m_Name: hero-idle-side

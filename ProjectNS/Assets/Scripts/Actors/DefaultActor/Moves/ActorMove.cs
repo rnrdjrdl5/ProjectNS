@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/* ****************************
+ * 
+ * 액터 이동
+ * 
+ *  - 액터가 이동할 때
+ *  
+ *  ***************************/
 public class ActorMove : MonoBehaviour {
 
 

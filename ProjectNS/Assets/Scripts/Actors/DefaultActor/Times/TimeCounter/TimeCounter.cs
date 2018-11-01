@@ -34,6 +34,7 @@ public class TimeCounter : MonoBehaviour {
         TimeStates = new List<TimeState>();
 
         components = GetComponent<Components>();
+
         rb2D = GetComponent<Rigidbody2D>();
     }
 
@@ -85,6 +86,8 @@ public class TimeCounter : MonoBehaviour {
                         RealPlayTime = Time.realtimeSinceStartup 
                     };
                     timeState.TObjectSt = tos;
+
+                    tos.AttachEvent(timeState);
                     break;
 
                 case Components.EnumProperty.ACTOR:
@@ -93,6 +96,8 @@ public class TimeCounter : MonoBehaviour {
                         JumpHeight = rb2D.velocity.y
                     };
                     timeState.TActorSt = tas;
+
+                    tas.AttachEvent(timeState);
                     break;
             }
         }
@@ -121,9 +126,7 @@ public class TimeCounter : MonoBehaviour {
         }
     }
 
-    public delegate void DeleReverseMove(TimeState beforeTS, TimeState dbBeforeTS, float linearData);
-    private DeleReverseMove reverseMoveEvent;
-    public void AttachReverseMove(DeleReverseMove erm) { reverseMoveEvent = erm; }
+
 
     /**********************************************************
      * 
@@ -154,7 +157,7 @@ public class TimeCounter : MonoBehaviour {
 
 
 
-        // loop를 돌며 시간대를 찾아낸다
+        // loop를 돌며 적정 시간대를 찾아낸다
         while (true)
         {
 
@@ -202,8 +205,30 @@ public class TimeCounter : MonoBehaviour {
         }
 
 
-        // 각종 이벤트 사용
-        if(reverseMoveEvent!= null) reverseMoveEvent(beforeTS, dbBeforeTS, deltaTime);
+
+
+        // Linear 구하기
+        float beforeDeltaTime = beforeTS.TObjectSt.DeltaTime;
+        float linear = 0.0f;
+
+        if (deltaTime > 0)
+        {
+            linear = deltaTime / beforeDeltaTime;
+        }
+
+
+
+        /**********************************************************
+         * 
+         * 시간 정보에 Event를 위임해서 사용한다.
+         * 
+         *  - 많은 State들은 각자 Event를 가진다.
+         *  
+         *  - 해당 State 원소에는 각 오브젝트 속성 메서드가 붙어있다. 
+         *  
+         * **********************************************************/
+        beforeTS.CallReverseTimeEvent(beforeTS, dbBeforeTS, linear, gameObject, components);
+
 
 
         // 사용 후 지금 위치의 이벤트 삭제
